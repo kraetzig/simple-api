@@ -154,7 +154,7 @@ Steps:
 
 ## 📞 Informações do Projeto
 
-- **Repositório**: https://github.com/SuporteKXC/simple-api
+- **Repositório**: https://github.com/kraetzig/simple-api
 - **Pipeline**: GitHub Actions
 - **Documentação**: README.md no repositório
 - **Status**: ✅ **OPERACIONAL**
