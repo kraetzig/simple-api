@@ -6,7 +6,7 @@ on:
 
 env:
   AWS_REGION: us-east-1
-  ECR_REPOSITORY: simple-api
+  ECR_REPOSITORY: desafiokxc
   ECS_SERVICE: desafio-kxc-service
   ECS_CLUSTER: desafio-kxc-cluster
 
