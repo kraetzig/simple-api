@@ -1,0 +1,43 @@
+name: Node.js Deploy
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Build
+      run: npm run build
+    
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+    
+    - name: Deploy to Elastic Beanstalk
+      run: |
+        zip -r deploy.zip . -x "*.git*" "node_modules/*"
+        aws s3 cp deploy.zip s3://elasticbeanstalk-us-east-1-213899361839/deploy-${{ github.run_number }}.zip
+        aws elasticbeanstalk create-application-version \
+          --application-name github-app \
+          --version-label v${{ github.run_number }} \
+          --source-bundle S3Bucket=elasticbeanstalk-us-east-1-213899361839,S3Key=deploy-${{ github.run_number }}.zip
+        aws elasticbeanstalk update-environment \
+          --environment-name github-app-env \
+          --version-label v${{ github.run_number }}
